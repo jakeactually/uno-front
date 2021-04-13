@@ -61,21 +61,27 @@ img {
   position: relative;
   width: 18vw;
   max-width: 100px;
-  border: 4px solid transparent;
+  margin: 0;
 }
 
 #board {
-  display: grid;
-  grid-gap: 5px;
+  position: relative;
   grid-template-columns: repeat(4, min-content);
   margin-bottom: 100px;
+}
+
+#board img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateX(-50%);
 }
 
 #hand {
   position: absolute;
   left: 0;
   width: 100%;
-  bottom: 0;
+  bottom: 10px;
 }
 
 #hand img {
@@ -83,8 +89,8 @@ img {
   bottom: 0;
   width: 18vw;
   max-width: 100px;
-  margin: 1px;
   transition-duration: 400ms;
+  transform: translateX(-50%);
 }
 
 .selected {
@@ -131,11 +137,36 @@ img {
   padding: 10px;
 }
 
-.legend {
-  text-align: left;
-}
-
 .current {
   color: white;
   background-color: black;
+}
+
+#choose-color {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows:  1fr 1fr;
+}
+
+#red {
+  background-color: #FF5555;
+}
+
+#green {
+  background-color: #55AA55;
+}
+
+#blue {
+  background-color: #5555FF;
+}
+
+#yellow {
+  background-color: #FFAA00;
 }

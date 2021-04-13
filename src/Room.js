@@ -73,7 +73,7 @@ export const Room = () => {
 };
 
 export const play = (history, roomId, room, addToast) => () => {
-    if (room.players.length == 2 || room.players.length == 4) {
+    if (room.players.length === 2 || room.players.length === 4) {
         history.push(`/play/${roomId}`);
     } else {
         addToast('There must be 2 or 4 players', {
