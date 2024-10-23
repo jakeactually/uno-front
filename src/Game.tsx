@@ -116,7 +116,7 @@ export const GameComponent = () => {
     );
 
     const onError = (error: AxiosError) => {
-        toast(error.response?.data?.toString() || '', {});
+        toast.error(error.response?.data?.toString() || '');
     };
 
     const doTurn = (turn: Turn) => {

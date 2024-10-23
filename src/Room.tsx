@@ -98,13 +98,10 @@ export const Room = () => {
     </main>;
 };
 
-export const play = (navigate: NavigateFunction, roomId: string, room: Room, toast: Function) => () => {
+export const play = (navigate: NavigateFunction, roomId: string, room: Room, toast: { error: Function }) => () => {
     if (room.players.length === 2 || room.players.length === 4) {
         navigate(`/play/${roomId}`);
     } else {
-        toast('There must be 2 or 4 players', {
-            appearance: 'error',
-            autoDismiss: true
-        });
+        toast.error('There must be 2 or 4 players');
     }
 };
