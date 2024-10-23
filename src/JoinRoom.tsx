@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 
-export const Home = ({ match }) => {
-    const history = useHistory();
+export const JoinRoom = () => {
+    const params = useParams();
+    const navigate = useNavigate();
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
@@ -21,22 +22,17 @@ export const Home = ({ match }) => {
                 onChange={ev => setUserName(ev.target.value)}
                 required />
             <br></br>
-            <button
+            <button            
                 type="button"
                 className="blue-button"
-                onClick={makeARoom(history, userName)}>
-                Make a room
+                onClick={makeARoom(navigate, userName, params.id || '')}>
+                Join room #{params.id}
             </button>
         </form>
     </main>;
 };
 
-export const makeARoom = (history, username) => async () => {
-    const { data, status } = await axios.post('/new-room', { username });
-    
-    if (status === 401) {
-        history.push(`/join-room/${data.room_id}`);
-    } else {
-        history.push(`/room/${data.room_id}`);
-    }
+export const makeARoom = (navigate: NavigateFunction, username: string, roomId: string) => async () => {
+    const { data } = await axios.post(`/join-room/${roomId}`, { username });
+    navigate(`/room/${data.room_id}`);
 };

@@ -1,14 +1,40 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { useToasts } from 'react-toast-notifications';
+import toast from "react-hot-toast";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+
+export type Game = {
+    room: Room,
+    player: Player,
+};
+
+export type Room = {
+    state: string,
+    chain_count: number,
+    current_player: Player,
+    players: Player[],
+    board: DeckCard[],
+    color: string,
+};
+
+export type Player = {
+    id: number,
+    name: string,
+    hand: DeckCard[],
+    drawed: boolean,
+};
+
+export type CardColor = "Red" | "Blue" | "Green" | "Yellow";
+export type CardAction = "Stop" | "Reverse" | "Plus2" | "Plus4" | "ChangeColor";
+export type NumberCard = { Number: [number, CardColor] };
+export type ActionCard = { [K in CardAction]?: CardColor } | CardAction;
+export type DeckCard = [number, NumberCard | ActionCard];
 
 export const Room = () => {
-    const { params } = useRouteMatch();
-    const history = useHistory();
-    const [room, setRoom] = useState({ players: [] });
-    const [socket, setSocket] = useState(0);
-    const { addToast } = useToasts();
+    const params = useParams();
+    const navigate = useNavigate();
+    const [room, setRoom] = useState<Room>({ players: [] } as unknown as Room);
+    const [update, setUpdate] = useState(0);
 
     useEffect(() => {
         (async () => {
@@ -16,12 +42,12 @@ export const Room = () => {
                 const { data } = await axios.get(`/room/${params.id}`);
                 setRoom(data);
             } catch (error) {
-                if (error.response.status === 401) {
-                    history.push(`/join-room/${params.id}`);
+                if ((error as AxiosError).response?.status === 401) {
+                    navigate(`/join-room/${params.id}`);
                 }
             }
         })();
-    }, [socket]);
+    }, [update]);
 
     const connect = () => {
         const socket = new WebSocket(
@@ -30,7 +56,7 @@ export const Room = () => {
     
         socket.onmessage = async ev => {
             console.log(ev);
-            setSocket(socket + 1);
+            setUpdate(update + 1);
         };
     
         socket.onerror = ev => {
@@ -62,7 +88,7 @@ export const Room = () => {
             <button
                 type="button"
                 className="blue-button down"
-                onClick={play(history, params.id, room, addToast)}>
+                onClick={play(navigate, params.id || '', room, toast)}>
                 Play
             </button>
             <button type="button" className="blue-button">
@@ -72,11 +98,11 @@ export const Room = () => {
     </main>;
 };
 
-export const play = (history, roomId, room, addToast) => () => {
+export const play = (navigate: NavigateFunction, roomId: string, room: Room, toast: Function) => () => {
     if (room.players.length === 2 || room.players.length === 4) {
-        history.push(`/play/${roomId}`);
+        navigate(`/play/${roomId}`);
     } else {
-        addToast('There must be 2 or 4 players', {
+        toast('There must be 2 or 4 players', {
             appearance: 'error',
             autoDismiss: true
         });

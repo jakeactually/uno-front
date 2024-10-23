@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
+#root {
+  width: 100%;
+}
+
 main {
   display: flex;
   align-items: center;
