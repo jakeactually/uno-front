@@ -13,8 +13,13 @@ export const JoinRoom = () => {
         });
     }, []);
     
+    const handleOnSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+        ev.preventDefault();
+        makeARoom(navigate, userName, params.id || '');
+    };
+
     return <main>
-        <form>
+        <form onSubmit={handleOnSubmit}>
             <input
                 type="text"
                 placeholder="Enter a name"

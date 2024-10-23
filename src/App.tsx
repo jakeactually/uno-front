@@ -1,11 +1,10 @@
 import './App.css';
 
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import {Room} from "./Room";
-import {JoinRoom} from "./JoinRoom";
-import {GameComponent} from "./Game.tsx";
-import {Home} from "./Home.tsx";
+import { Room } from "./Room";
+import { JoinRoom } from "./JoinRoom";
+import { GameComponent } from "./Game.tsx";
+import { Home } from "./Home.tsx";
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 

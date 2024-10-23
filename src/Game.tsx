@@ -68,10 +68,9 @@ export const GameComponent = () => {
     }, []);
 
     const cell = window.innerWidth / (game.player.hand.length + 1);
-    let frame = 0;
 
     const bind = useDrag(
-        ({ last, movement: [mx], direction: [dx], memo = positions }) => {
+        ({ movement: [mx], direction: [dx], memo = positions }) => {
             // Deep copy of current positions
             let newPositions = [...memo];
 
@@ -96,14 +95,13 @@ export const GameComponent = () => {
     );
 
     const handleSwipe = useDrag(
-        ({ direction: [dx, dy], last, memo = game.player.hand }) => {
+        ({ direction: [, dy], last }) => {
             if (last && dy < 0) {
                 // Swipe up logic (dy < 0 means swipe up)
                 const length = game.player.hand.length;
                 const half = Math.floor(length / 2 + (length % 2)) % length;
                 const [card_id, card] = game.player.hand[(length - positions[half]) % length];
 
-                console.log(card);
                 const turn = { card_id };
                 setTurn(turn);
 
@@ -233,40 +231,38 @@ const toImage = (cardTuple: DeckCard): string => {
 };
 
 const action = (onError: (_: AxiosError) => void, roomId: string, { state, chain_count: count, current_player }: Room, { id, drawed }: Player) => {
-    let action = { text: '', className: '', onclick: () => { } };
+    const makeOnClick = (url: string) => () => axios.post(url + roomId).catch(onError);
 
-    if (current_player.id != id) {
-        action.text = 'Stand by';
-        action.className = 'disabled';
-        action.onclick = () => {
-
+    if (current_player.id !== id) {
+        return {
+            text: 'Stand by',
+            className: 'disabled',
+            onclick: () => {}
         };
     } else if (state === "Plus2") {
-        action.text = 'Draw ' + count * 2;
-        action.onclick = () => {
-            axios.post('/penalty/' + roomId).catch(onError);
+        return {
+            text: 'Draw ' + count * 2,
+            onclick: makeOnClick('/penalty/')
         };
     } else if (state === "Plus4") {
-        action.text = 'Draw ' + count * 4;
-        action.onclick = () => {
-            axios.post('/penalty/' + roomId).catch(onError);
+        return {
+            text: 'Draw ' + count * 4,
+            onclick: makeOnClick('/penalty/')
         };
     } else if (state === "Stop") {
-        action.text = 'Pass';
-        action.onclick = () => {
-            axios.post('/penalty/' + roomId).catch(onError);
+        return {
+            text: 'Pass',
+            onclick: makeOnClick('/penalty/')
         };
     } else if (drawed) {
-        action.text = 'Pass';
-        action.onclick = () => {
-            axios.post('/pass/' + roomId).catch(onError);
+        return {
+            text: 'Pass',
+            onclick: makeOnClick('/pass/')
         };
     } else {
-        action.text = 'Draw';
-        action.onclick = () => {
-            axios.post('/draw/' + roomId).catch(onError);
+        return {
+            text: 'Draw',
+            onclick: makeOnClick('/draw/')
         };
     }
-
-    return action;
 };
