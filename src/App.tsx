@@ -8,27 +8,30 @@ import { Home } from "./Home.tsx";
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 
-axios.defaults.baseURL = '/api';
+axios.defaults.baseURL = '/uno/api';
 axios.defaults.withCredentials = true;
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/room/:id",
-    element: <Room />,
-  },
-  {
-    path: "/join-room/:id",
-    element: <JoinRoom />,
-  },
-  {
-    path: "/play/:id",
-    element: <GameComponent />,
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/room/:id",
+      element: <Room />,
+    },
+    {
+      path: "/join-room/:id",
+      element: <JoinRoom />,
+    },
+    {
+      path: "/play/:id",
+      element: <GameComponent />,
+    },
+  ],
+  { basename: '/uno' }
+);
 
 function App() {
   return (
